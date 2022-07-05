@@ -7,8 +7,8 @@ inputs:
     default: 'World'
 outputs:
   random-number:
-    description: "Random number"
-    value: ${{ steps.random-number-generator.outputs.random-number }}
+    description: "Docker Image tags"
+    value: ${{ steps.meta.outputs.tags }}
 runs:
   using: "composite"
   steps:
@@ -29,7 +29,6 @@ runs:
       uses: aws-actions/configure-aws-credentials@v1
       with:
         aws-region: '${{ env.ECR_REGION }}'
-
 
     - name: Docker metadata extraction
       id: meta
@@ -63,7 +62,7 @@ runs:
       id: slack
       uses: slackapi/slack-github-action@v1.19.0
       with:
-        channel-id: ${{ secrets.SLACK_CHANNEL_ID }}
+        channel-id: ${{ env.SLACK_CHANNEL_ID }}
         # For posting a simple plain text message
         slack-message: |
           GitHub build result: ${{ job.status }}
@@ -73,4 +72,4 @@ runs:
           - app_name: `${{ env.REPO_NAME }}`
           - app_version: `${{ steps.get_tags.outputs.image_tags }}`
       env:
-        SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
+        SLACK_BOT_TOKEN: ${{ env.SLACK_BOT_TOKEN }}

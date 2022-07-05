@@ -30,6 +30,12 @@ runs:
       with:
         aws-region: '${{ env.ECR_REGION }}'
 
+    - name: Login to Amazon ECR
+      id: login-ecr
+      uses: aws-actions/amazon-ecr-login@v1
+      with:
+        registries: '${{ env.ECR_ACCOUNTS }}'
+
     - name: Docker metadata extraction
       id: meta
       uses: docker/metadata-action@v4
